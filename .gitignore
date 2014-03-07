@@ -9,3 +9,5 @@ sdist
 *.egg-info
 *.pyc
 venv/
+.idea/
+*.iml
