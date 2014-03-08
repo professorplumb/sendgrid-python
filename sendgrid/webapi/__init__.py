@@ -10,7 +10,8 @@ except ImportError:  # Python 2
     from urllib import urlencode
 
 _SG_USER, _SG_PWD = None, None
-DEBUG = True
+DEBUG = False
+
 
 def set_credentials(username, password):
     global _SG_USER, _SG_PWD
@@ -24,13 +25,13 @@ class SendGridBase(object):
     _api_baseurl = "https://api.sendgrid.com/api"
 
     def __init__(self, *args, **kwargs):
+        global _SG_USER, _SG_PWD
         # First look in global variables set by set_credentials
         self.sg_username, self.sg_password = _SG_USER, _SG_PWD
 
         # then in constructor kwargs - set the globals to these
         if self.sg_username is None or self.sg_password is None:
             self.sg_username, self.sg_password = kwargs.pop('SG_USER', None), kwargs.pop('SG_PWD', None)
-            global _SG_USER, _SG_PWD
             _SG_USER, _SG_PWD = self.sg_username, self.sg_password
 
         super(SendGridBase, self).__init__(*args, **kwargs)
