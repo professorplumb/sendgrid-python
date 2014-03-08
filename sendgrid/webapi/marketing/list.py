@@ -74,17 +74,7 @@ class List(SendGridBase):
     def delete(self):
         self.manager.delete(self)
 
-    def get_email(self, email):
-        l = self.get_emails(email)
-        try:
-            return l[0]
-        except IndexError:
-            return {}
-
-    def get_emails(self, emails=None):
-        if emails is None:
-            emails = []
-
+    def get_emails(self, *emails):
         data = {'list': self.name, }
         if emails:
             data['email'] = emails
@@ -92,8 +82,12 @@ class List(SendGridBase):
                              contains_sequence=isinstance(emails, list))
 
     def add_emails(self, *emails):
-        emails = [json.dumps(i) if isinstance(i, dict) else json.dumps({'email': i})
-                      for i in emails]
+        """
+        Unlike get_emails and remove_emails, the arguments to this function should be dictionaries.
+
+        Each has two required keys: 'email' and 'name'.  Addition of a dict without both will fail silently.
+        """
+        emails = [json.dumps(i) if isinstance(i, dict) else json.dumps({'email': i}) for i in emails]
 
         result = self.call_api(self.api_url.format('add'), {'list': self.name, 'data': emails, },
                                contains_sequence=True)
