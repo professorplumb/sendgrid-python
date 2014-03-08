@@ -91,22 +91,11 @@ class List(SendGridBase):
         return self.call_api(self.api_url.format('get'), data,
                              contains_sequence=isinstance(emails, list))
 
-    def add_email(self, email, name, **kwargs):
-        kwargs['email'] = email
-        kwargs['name'] = name
+    def add_emails(self, *emails):
+        emails = [json.dumps(i) if isinstance(i, dict) else json.dumps({'email': i})
+                      for i in emails]
 
-        result = self.call_api(self.api_url.format('add'), {'list': self.name, 'data': json.dumps(kwargs), })
-
-        if DEBUG:
-            print "Added {} emails".format(result['inserted'])
-
-        return result['inserted']
-
-    def add_emails(self, email_list):
-        email_list = [json.dumps(i) if isinstance(i, dict) else json.dumps({'email': i})
-                      for i in email_list]
-
-        result = self.call_api(self.api_url.format('add'), {'list': self.name, 'data': email_list, },
+        result = self.call_api(self.api_url.format('add'), {'list': self.name, 'data': emails, },
                                contains_sequence=True)
 
         if DEBUG:
@@ -114,18 +103,10 @@ class List(SendGridBase):
 
         return result['inserted']
 
-    def remove_email(self, email):
-        result = self.call_api(self.api_url.format('delete'), {'list': self.name, 'email': email, })
+    def remove_emails(self, *emails):
+        emails = [i if isinstance(i, str) else i['email'] for i in emails]
 
-        if DEBUG:
-            print "Removed {} emails".format(result['removed'])
-
-        return result['removed']
-
-    def remove_emails(self, email_list):
-        email_list = [i if isinstance(i, str) else i['email'] for i in email_list]
-
-        result = self.call_api(self.api_url.format('delete'), {'list': self.name, 'email': email_list, },
+        result = self.call_api(self.api_url.format('delete'), {'list': self.name, 'email': emails, },
                                contains_sequence=True)
 
         if DEBUG:
