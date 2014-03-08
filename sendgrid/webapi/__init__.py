@@ -30,8 +30,9 @@ class SendGridBase(object):
         self.sg_username, self.sg_password = _SG_USER, _SG_PWD
 
         # then in constructor kwargs - set the globals to these
+        sgu, sgp = kwargs.pop('SG_USER', None), kwargs.pop('SG_PWD', None)
         if self.sg_username is None or self.sg_password is None:
-            self.sg_username, self.sg_password = kwargs.pop('SG_USER', None), kwargs.pop('SG_PWD', None)
+            self.sg_username, self.sg_password = sgu, sgp
             _SG_USER, _SG_PWD = self.sg_username, self.sg_password
 
         super(SendGridBase, self).__init__(*args, **kwargs)
