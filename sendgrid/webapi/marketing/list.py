@@ -98,7 +98,7 @@ class List(SendGridBase):
         return result['inserted']
 
     def remove_emails(self, *emails):
-        emails = [i if isinstance(i, str) else i['email'] for i in emails]
+        emails = [i if isinstance(i, basestring) else i['email'] for i in emails]
 
         result = self.call_api(self.api_url.format('delete'), {'list': self.name, 'email': emails, },
                                contains_sequence=True)
