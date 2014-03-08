@@ -59,8 +59,6 @@ class List(SendGridBase):
         self.manager = manager
         if not self.manager or not isinstance(self.manager, ListManager):
             raise ValueError("Use ListManager to get List instances.")
-        self.sg_username = self.manager.sg_username
-        self.sg_password = self.manager.sg_password
 
         super(List, self).__init__(*args, **kwargs)
 
